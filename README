@@ -6,3 +6,8 @@ By: Chris Pappas <cpappas@hepcom.ca>
 These are a set of scripts and config files that can be used
 to quickly set up virtual hosting with Apache, PHP5 and FCGID
 
+You need to set the default virtualhost basename and perform some
+other minor configuration changes in etc/apache2/sites-available/_skel_vhost
+
+
+

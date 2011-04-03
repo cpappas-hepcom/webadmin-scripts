@@ -14,12 +14,15 @@
 ## symlinks - or the application will not find the PHP file properly!
 ## You may use symlinks inside of the document root though.
 
+## depending on your configuration, you may need to add the IP address to
+## the below line (eg. <VirtualHost 12.34.56.78:80>)
+
 <VirtualHost *:80>
 
 ## Make sure to set this to your url base (eg. {vhost_user}.dev.hepcom.ca
-  ServerName {vhost_user}.your.base.tld
-
 ## and replace this with your webmaster's email address
+
+  ServerName {vhost_user}.your.base.tld
   ServerAdmin your@email.tld
 
   DocumentRoot /home/{vhost_user}/public_html/
