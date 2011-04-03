@@ -2,29 +2,46 @@
 ## References FCGI wrapper script to start PHP
 ## Runs all PHP scripts as the user to enforce privilege separation
 ##
+## The tags inside of the curly braces will be replaced by the adduser_vhost script
+## {vhost_user} - the new user name
+## {vhost_group} - the new user's group name
+##
 ## Author: Chris Pappas <cpappas@hepcom.ca>
-## Last Updated: 2010-11-18 11:07
-## Version: 4.0
+## Last Updated: 2011-04-03 18:36
+## Version: 1.5.0
 ##
 ## The Document root and Directory below MUST exist and cannot be
 ## symlinks - or the application will not find the PHP file properly!
+## You may use symlinks inside of the document root though.
 
 <VirtualHost *:80>
-  ServerName {vhost_user}.pro.hepcom.ca
-  ServerAdmin admin@hepcom.ca
+
+## Make sure to set this to your url base (eg. {vhost_user}.dev.hepcom.ca
+  ServerName {vhost_user}.your.base.tld
+
+## and replace this with your webmaster's email address
+  ServerAdmin your@email.tld
+
   DocumentRoot /home/{vhost_user}/public_html/
 
   <IfModule mod_fcgid.c>
+
+## this directive specifies the user and group under which the scripts will run
     SuexecUserGroup {vhost_user} {vhost_group}
+
     <Directory /home/{vhost_user}/public_html/>
       Options +ExecCGI
       AllowOverride All
-      AddHandler fcgid-script .php
-      FCGIWrapper /var/www/php-fcgi-scripts/{vhost_user}/php-fcgi-starter .php
       Order allow,deny
       Allow from all
       DirectoryIndex index.php index.html index.htm
+			
+## FCGID specific settings
+      AddHandler fcgid-script .php
+      FCGIWrapper /var/www/php-fcgi-scripts/{vhost_user}/php-fcgi-starter .php
+
     </Directory>
+
   </IfModule>
 
 ## Comment out the line below to log all errors to 
