@@ -1,0 +1,39 @@
+## Apache2 Virtual Host Definition
+## References FCGI wrapper script to start PHP
+## Runs all PHP scripts as the user to enforce privilege separation
+##
+## Author: Chris Pappas <cpappas@hepcom.ca>
+## Last Updated: 2010-11-18 11:07
+## Version: 4.0
+##
+## The Document root and Directory below MUST exist and cannot be
+## symlinks - or the application will not find the PHP file properly!
+
+<VirtualHost *:80>
+  ServerName {vhost_user}.pro.hepcom.ca
+  ServerAdmin admin@hepcom.ca
+  DocumentRoot /home/{vhost_user}/public_html/
+
+  <IfModule mod_fcgid.c>
+    SuexecUserGroup {vhost_user} {vhost_group}
+    <Directory /home/{vhost_user}/public_html/>
+      Options +ExecCGI
+      AllowOverride All
+      AddHandler fcgid-script .php
+      FCGIWrapper /var/www/php-fcgi-scripts/{vhost_user}/php-fcgi-starter .php
+      Order allow,deny
+      Allow from all
+      DirectoryIndex index.php index.html index.htm
+    </Directory>
+  </IfModule>
+
+## Comment out the line below to log all errors to 
+## the common log file at /var/log/apache2/error.log 
+  ErrorLog /home/{vhost_user}/access_logs/error.log
+
+## we will give each client their own access.log
+  CustomLog /home/{vhost_user}/access_logs/access.log combined
+
+  ServerSignature Off
+
+</VirtualHost>

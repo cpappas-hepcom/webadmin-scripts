@@ -1,0 +1,77 @@
+#!/bin/sh -e
+
+##-----------------------------------------------------------------------------
+## Adduser Script for a Hep Communications Virtual Host
+##
+##	By: Chris Pappas <cpappas@hepcom.ca>
+##	Last Updated: April 30, 2010 15:51
+##	Version: 0.3
+##
+##	Usage: /root/bin/adduser_vhost <username>
+##
+##	Creates the user using adduser with the custom adduser.conf.vhost file
+##	The password and all GECOS data must be specified manually
+##
+## 	This gives us safer defaults like /usr/sbin/nologin shells, and will give
+##		them user/group ids between 5000 and 6000.
+##	It also copies the skeleton files from /etc/skel_vhost
+##
+##	TODO:
+##		Add support for automatically creating the fcgid wrapper scripts
+##		Add support for auto creating their apache2/sites-available vhost def
+##			Don't want to enable this right away though!
+##
+
+## check to ensure that the username has been specified
+if [ -z $1 ]; then
+	echo "Usage: $0 user-name" 1>&2
+	exit 1
+fi
+
+## create the new user and check to see if it worked
+## if not then exit this script
+
+echo "Creating New User: $1"
+
+## generate a series of passwords to choose from
+pwgen -sB 16
+
+adduser --conf /etc/adduser.conf.vhost --gecos $1 $1
+if [ $? -eq 1 ]; then
+	echo "Error! $0 failed" 1>&2
+	exit 1
+fi
+
+## here is where the stuff for setting up fcgid wrappers will go
+## as well as the apache stuff
+## also any assorted other goodies can go here as well
+
+
+## copy the fcgi starter scripts to a new directory
+## with the user name and then chown them so the new user owns them
+
+echo "Making new php-fcgi-scripts folder"
+
+mkdir -p /var/www/php-fcgi-scripts/$1/
+cp /var/www/php-fcgi-scripts/skel_vhost/* /var/www/php-fcgi-scripts/$1/
+chown -R $1 /var/www/php-fcgi-scripts/$1/
+chgrp -R $1 /var/www/php-fcgi-scripts/$1/
+
+
+## the fcgi scripts have now been created
+## now let's create the apache2 sites-available vhost definition
+
+echo "Making new apache2 vhost definition"
+
+cp /etc/apache2/sites-available/_skel_vhost /etc/apache2/sites-available/$1
+sed -i "s/{vhost_user}/$1/g" /etc/apache2/sites-available/$1
+sed -i "s/{vhost_group}/$1/g" /etc/apache2/sites-available/$1
+
+## we are now finished!
+## the user has been created successfully
+
+echo "User $1 created successfully. Run 'a2ensite $1' to enable their development site."
+echo "Then, run 'service apache2 reload' to reload the configuration and make the site available"
+
+exit 0
+

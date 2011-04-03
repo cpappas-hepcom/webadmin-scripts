@@ -1,0 +1,18 @@
+#!/bin/sh
+
+## PHP-FCGID wrapper script for virtual hosts
+## This script allows us to customize the php environment on a
+## per-vhost basis. By default all vhosts use the same php.ini
+##
+## New version for cloverfield
+##
+## Author: Chris Pappas <cpappas@hepcom.ca>
+## Last Updated: Oct 27 2010 13:30
+## Version: 0.2
+
+PHPRC=/etc/php5/cgi/
+export PHPRC
+export PHP_FCGI_MAX_REQUESTS=5000
+export PHP_FCGI_MAX_CHILDREN=8
+exec /usr/lib/cgi-bin/php
+

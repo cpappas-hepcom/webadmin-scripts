@@ -1,0 +1,8 @@
+Chris's Web Server Admin Tools
+==============================
+
+By: Chris Pappas <cpappas@hepcom.ca>
+
+These are a set of scripts and config files that can be used
+to quickly set up virtual hosting with Apache, PHP5 and FCGID
+
