@@ -7,12 +7,14 @@
 ## New version for cloverfield
 ##
 ## Author: Chris Pappas <cpappas@hepcom.ca>
-## Last Updated: Oct 27 2010 13:30
-## Version: 0.2
+## Last Updated: 2011-04-11
+## Version: 0.3
+##
+## Removed the PHP_FCGI_MAX_CHILDREN as it is reported to cause problems?
 
 PHPRC=/etc/php5/cgi/
 export PHPRC
-export PHP_FCGI_MAX_REQUESTS=5000
-export PHP_FCGI_MAX_CHILDREN=8
+export PHP_FCGI_MAX_REQUESTS=1000
+#export PHP_FCGI_MAX_CHILDREN=8
 exec /usr/lib/cgi-bin/php
 
